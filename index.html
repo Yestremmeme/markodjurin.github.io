@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marko Đurin — AI Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg3: #1a1a24;
+    --accent: #7fff6e;
+    --accent2: #4fd1c5;
+    --text: #f0f0f0;
+    --muted: #888899;
+    --border: rgba(255,255,255,0.08);
+    --card-bg: rgba(255,255,255,0.03);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .nav-center {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-center a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-center a:hover { color: var(--text); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .lang-btn {
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    color: var(--muted);
+    border: none;
+    background: transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .lang-btn.active { background: var(--accent); color: #0a0a0f; }
+  .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.08); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-glow-1 {
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(127,255,110,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-glow-2 {
+    position: fixed;
+    bottom: -100px; left: 30%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(79,209,197,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-tag::before { content: '> '; opacity: 0.5; }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.35s forwards;
+  }
+
+  .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+    display: block;
+  }
+
+  .accent-word {
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.65s forwards;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 0.85rem 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  .btn-ghost {
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--text); }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+    flex-wrap: wrap;
+  }
+
+  .project-demo {
+  margin-top: 1.2rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #111;
+  }
+
+  .project-demo img,
+  .project-demo video {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  max-height: 220px;
+  }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-num span { color: var(--accent); }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3) 20%, rgba(0,0,0,0.3) 80%, transparent);
+  }
+
+  section {
+    padding: 5rem 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    line-height: 1.1;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .project-card:hover { border-color: rgba(127,255,110,0.2); background: rgba(127,255,110,0.03); transform: translateY(-4px); }
+  .project-card:hover::before { opacity: 1; }
+
+  .project-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: rgba(127,255,110,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    font-size: 20px;
+  }
+
+  .project-card:nth-child(2) .project-icon { background: rgba(79,209,197,0.1); }
+  .project-card:nth-child(3) .project-icon { background: rgba(167,139,250,0.1); }
+  .project-card:nth-child(4) .project-icon { background: rgba(251,191,36,0.1); }
+
+  .project-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 1.25rem; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .project-result {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  .skills-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .skill-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .skill-item:hover { border-color: rgba(127,255,110,0.25); background: rgba(127,255,110,0.04); transform: translateY(-2px); }
+  .skill-icon { font-size: 24px; margin-bottom: 0.5rem; display: block; }
+  .skill-name { font-size: 13px; font-weight: 600; margin-bottom: 0.25rem; }
+  .skill-level { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .achievements-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .achievement {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    transition: all 0.2s;
+  }
+
+  .achievement:hover { border-color: rgba(127,255,110,0.2); transform: translateX(4px); }
+
+  .ach-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(127,255,110,0.08);
+    border-radius: 10px;
+  }
+
+  .ach-text { flex: 1; }
+  .ach-title { font-weight: 700; font-size: 14px; margin-bottom: 0.2rem; }
+  .ach-sub { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+  .ach-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(127,255,110,0.1);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .contact-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(127,255,110,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-heading { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .contact-sub { color: var(--muted); font-size: 14px; margin-top: 0.5rem; font-family: 'Space Mono', monospace; }
+  .contact-actions { display: flex; gap: 1rem; flex-shrink: 0; flex-wrap: wrap; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.5rem;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-center { display: none; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+    section { padding: 3rem 1.25rem; }
+    .hero-stats { gap: 1.5rem; margin-top: 3rem; }
+    .contact-box { padding: 2rem 1.5rem; }
+    footer { padding: 1.5rem 1.25rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="hero-glow-1"></div>
+<div class="hero-glow-2"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Marko Đurin.py</a>
+  <ul class="nav-center">
+    <li><a href="#projects" data-t="nav_projects">Projects</a></li>
+    <li><a href="#skills" data-t="nav_skills">Skills</a></li>
+    <li><a href="#about" data-t="nav_about">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-sr" onclick="setLang('sr')">🇷🇸 SR</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 EN</button>
+    </div>
+    <a href="#contact" class="nav-cta" data-t="nav_hire">Kontakt</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <p class="hero-tag" data-t="hero_tag">AI Programer i inženjer automatizacije</p>
+  <h1 class="hero-title">
+    <span data-t="hero_line1">Gradim</span><br>
+    <span class="line2" data-t="hero_line2">stvari koje</span>
+    <span class="accent-word" data-t="hero_line3">misle.</span>
+  </h1>
+  <p class="hero-sub" data-t="hero_sub">Šesnaestogodišnji takmičarski programer iz Srbije. Pravim AI alate za automatizaciju, botove i inteligentne sisteme koji firmama štede vreme i novac.</p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn-primary" data-t="hero_cta1">Pogledaj projekte</a>
+    <a href="#contact" class="btn-ghost" data-t="hero_cta2">Kontaktiraj me →</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-num">10<span>+</span></div>
+      <div class="stat-label" data-t="stat1">AI projekata</div>
+    </div>
+    <div>
+      <div class="stat-num">3<span>x</span></div>
+      <div class="stat-label" data-t="stat2">Državna takmičenja</div>
+    </div>
+    <div>
+      <div class="stat-num">∞</div>
+      <div class="stat-label" data-t="stat3">Problema za rešiti</div>
+    </div>
+  </div>
+</div>
+
+<section id="projects">
+  <p class="section-label fade-in" data-t="proj_label">// Šta sam napravio</p>
+  <h2 class="section-title fade-in" data-t="proj_title">Projekti</h2>
+  <div class="projects-grid">
+
+    <div class="project-card fade-in">
+      <div class="project-icon">✉️</div>
+      <div class="project-name" data-t="p1_name">Gmail Bot za odgovore</div>
+      <div class="project-desc" data-t="p1_desc">Bot pokrenut veštačkom inteligencijom koji automatski čita i odgovara na Gmail poruke. Štedi biznisima 2-3 sata dnevno na upravljanju mejlovima.</div>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">Gmail API</span>
+        <span class="tag">Groq AI</span>
+        <span class="tag">FastAPI</span>
+      </div>
+      <div class="project-demo">
+      <video autoplay muted loop playsinline>
+        <source src="gmail-demo.mp4" type="video/mp4">
+      </video>
+      </div>
+      <div class="project-result" data-t="p1_result">↳ Štedi ~3 sata dnevno na mejlovima</div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-icon">📄</div>
+      <div class="project-name" data-t="p2_name">Sumarizer sastanaka</div>
+      <div class="project-desc" data-t="p2_desc">Otpremi transkript sastanka i odmah dobij strukturiran sažetak sa ključnim odlukama, akcijama i rokovima. Podržava PDF, DOCX i TXT.</div>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">Groq AI</span>
+        <span class="tag">PDF/DOCX</span>
+      </div>
+      <div class="project-demo">
+        <video autoplay muted loop playsinline>
+          <source src="sumarizer-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="project-result" data-t="p2_result">↳ 1h sastanak u 30sec sažetak</div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-icon">👥</div>
+      <div class="project-name" data-t="p3_name">CV Skener</div>
+      <div class="project-desc" data-t="p3_desc">Otpremi više CV-jeva i opis posla — AI rangira kandidate od 1-10, ističe prednosti i slabosti i preporučuje koga pozvati na intervju.</div>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">Groq AI</span>
+        <span class="tag">Multi-file</span>a
+      </div>
+      <div class="project-demo">
+        <video autoplay muted loop playsinline>
+          <source src="cv-skener-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="project-result" data-t="p3_result">↳ Rangira 20 CV-jeva za 60 sekundi</div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-icon">📊</div>
+      <div class="project-name" data-t="p4_name">Monitor cena</div>
+      <div class="project-desc" data-t="p4_desc">Prati cene konkurencije 24/7 na više URL-ova. AI automatski izvlači cene sa bilo koje stranice i šalje email alarme kada se cene promene.</div>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">BeautifulSoup</span>
+        <span class="tag">Groq AI</span>
+        <span class="tag">Email Alerts</span>
+      </div>
+      <div class="project-demo">
+        <video autoplay muted loop playsinline>
+          <source src="monitor-cena-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="project-result" data-t="p4_result">↳ Prati neograničen broj URL-ova</div>
+    </div>
+
+  </div>
+</section>
+
+<section id="skills">
+  <p class="section-label fade-in" data-t="skills_label">// Šta koristim</p>
+  <h2 class="section-title fade-in" data-t="skills_title">Veštine i tehnologije</h2>
+  <div class="skills-row">
+    <div class="skill-item fade-in"><span class="skill-icon">🐍</span><div class="skill-name">Python</div><div class="skill-level" data-t="level_advanced">Napredno</div></div>
+    <div class="skill-item fade-in"><span class="skill-icon">🤖</span><div class="skill-name">Groq / LLMs</div><div class="skill-level" data-t="level_proficient">Iskusan</div></div>
+    <div class="skill-item fade-in"><span class="skill-icon">🌐</span><div class="skill-name">Web Scraping</div><div class="skill-level" data-t="level_proficient">Iskusan</div></div>
+    <div class="skill-item fade-in"><span class="skill-icon">⚡</span><div class="skill-name" data-t="skill_auto">Automatizacija</div><div class="skill-level" data-t="level_advanced">Napredno</div></div>
+    <div class="skill-item fade-in"><span class="skill-icon">🔌</span><div class="skill-name">REST APIs</div><div class="skill-level" data-t="level_proficient">Iskusan</div></div>
+    <div class="skill-item fade-in"><span class="skill-icon">📐</span><div class="skill-name" data-t="skill_algo">Algoritmi</div><div class="skill-level" data-t="level_competition">Takmičarski</div></div>
+  </div>
+</section>
+
+<section id="about">
+  <p class="section-label fade-in" data-t="about_label">// Ko sam ja</p>
+  <h2 class="section-title fade-in" data-t="about_title">Dostignuća</h2>
+  <div class="achievements-list">
+    <div class="achievement fade-in">
+      <div class="ach-icon">🏆</div>
+      <div class="ach-text">
+        <div class="ach-title" data-t="ach1_title">Državno takmičenje iz programiranja</div>
+        <div class="ach-sub" data-t="ach1_sub">Algoritmi i strukture podataka</div>
+      </div>
+      <div class="ach-badge" data-t="badge_competitor">Takmičar</div>
+    </div>
+    <div class="achievement fade-in">
+      <div class="ach-icon">📐</div>
+      <div class="ach-text">
+        <div class="ach-title" data-t="ach2_title">Državna matematička olimpijada</div>
+        <div class="ach-sub" data-t="ach2_sub">Rešavanje zadataka i matematičko razmišljanje</div>
+      </div>
+      <div class="ach-badge" data-t="badge_competitor">Takmičar</div>
+    </div>
+    <div class="achievement fade-in">
+      <div class="ach-icon">⚗️</div>
+      <div class="ach-text">
+        <div class="ach-title" data-t="ach3_title">Državno takmičenje iz fizike</div>
+        <div class="ach-sub" data-t="ach3_sub">Analitičko razmišljanje i naučno modelovanje</div>
+      </div>
+      <div class="ach-badge" data-t="badge_competitor">Takmičar</div>
+    </div>
+    <div class="achievement fade-in">
+      <div class="ach-icon">🤖</div>
+      <div class="ach-text">
+        <div class="ach-title" data-t="ach4_title">AI programer i automatičar</div>
+        <div class="ach-sub" data-t="ach4_sub">Izradio produkcijske AI alate za realne poslovne potrebe</div>
+      </div>
+      <div class="ach-badge" data-t="badge_self">Samouk</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-box fade-in">
+    <div>
+      <h2 class="contact-heading" data-t="contact_heading">Hajde da<br>napravimo nešto.</h2>
+      <p class="contact-sub" data-t="contact_sub">Dostupan za freelance projekte i saradnju</p>
+    </div>
+    <div class="contact-actions">
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=markodjurin4@gmail.com" target="_blank" class="btn-primary" data-t="contact_email">Pošalji mejl</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><span class="footer-dot"></span><span data-t="footer_status">Dostupan za posao</span></div>
+  <div data-t="footer_credit">Napravio Marko Đurin — Srbija 🇷🇸</div>
+</footer>
+
+<script>
+const translations = {
+  en: {
+    nav_projects: "Projects", nav_skills: "Skills", nav_about: "About", nav_hire: "Contact",
+    hero_tag: "AI Developer & Automation Engineer",
+    hero_line1: "I build", hero_line2: "things that", hero_line3: "think.",
+    hero_sub: "16-year-old competitive programmer from Serbia. I build AI automation tools, bots, and intelligent systems that save businesses real time and real money.",
+    hero_cta1: "See my work", hero_cta2: "Get in touch \u2192",
+    stat1: "AI projects built", stat2: "National competitions", stat3: "Problems to solve",
+    proj_label: "// What I've built", proj_title: "Projects",
+    p1_name: "Gmail Reply Bot",
+    p1_desc: "AI-powered bot that reads incoming Gmail messages and generates intelligent, context-aware replies automatically. Saves businesses 2-3 hours per day on email management.",
+    p1_result: "\u21b3 Saves ~3 hours/day of email management",
+    p2_name: "Meeting Summarizer",
+    p2_desc: "Upload any meeting transcript and instantly get a structured summary with key decisions, action items with owners, and deadlines. Supports PDF, DOCX and TXT.",
+    p2_result: "\u21b3 Turns 1hr meeting into 30sec summary",
+    p3_name: "CV Skener",
+    p3_desc: "Upload multiple CVs and a job description — AI ranks candidates by fit score 1-10, highlights strengths and weaknesses, and recommends who to interview.",
+    p3_result: "\u21b3 Ranks 20 CVs in under 60 seconds",
+    p4_name: "Price Monitor",
+    p4_desc: "Track competitor prices 24/7 across multiple URLs. AI automatically extracts prices from any webpage and sends email alerts when prices change.",
+    p4_result: "\u21b3 Monitors unlimited URLs 24/7",
+    skills_label: "// What I use", skills_title: "Skills & Stack",
+    level_advanced: "Advanced", level_proficient: "Proficient", level_competition: "Competition",
+    skill_auto: "Automation", skill_algo: "Algorithms",
+    about_label: "// Who I am", about_title: "Achievements",
+    ach1_title: "National Programming Competition", ach1_sub: "Competitive algorithms & data structures",
+    ach2_title: "National Math Olympiad", ach2_sub: "Problem solving & mathematical reasoning",
+    ach3_title: "National Physics Competition", ach3_sub: "Analytical thinking & scientific modeling",
+    ach4_title: "AI Automation Developer", ach4_sub: "Built production-ready AI tools for real business use cases",
+    badge_competitor: "Competitor", badge_self: "Self-taught",
+    contact_heading: "Let's build<br>something.", contact_sub: "Available for freelance projects & collaboration",
+    contact_email: "Send an email",
+    footer_status: "Open to work", footer_credit: "Built by Marko \u0110urin \u2014 Serbia \uD83C\uDDF7\uD83C\uDDF8"
+  },
+  sr: {
+    nav_projects: "Projekti", nav_skills: "Ve\u0161tine", nav_about: "O meni", nav_hire: "Kontakt",
+    hero_tag: "AI Programer i in\u017enjer automatizacije",
+    hero_line1: "Gradim", hero_line2: "stvari koje", hero_line3: "misle.",
+    hero_sub: "\u0160esnaestogodi\u0161nji takmi\u010darski programer iz Srbije. Pravim AI alate za automatizaciju, botove i inteligentne sisteme koji firmama \u0161tede vreme i novac.",
+    hero_cta1: "Pogledaj projekte", hero_cta2: "Kontaktiraj me \u2192",
+    stat1: "AI projekata", stat2: "Dr\u017eavna takmi\u010denja", stat3: "Problema za re\u0161iti",
+    proj_label: "// \u0160ta sam napravio", proj_title: "Projekti",
+    p1_name: "Gmail Bot za odgovore",
+    p1_desc: "Bot pokrenut ve\u0161ta\u010dkom inteligencijom koji automatski \u010dita i odgovara na Gmail poruke. \u0160tedi biznisima 2-3 sata dnevno na upravljanju mejlovima.",
+    p1_result: "\u21b3 \u0160tedi ~3 sata dnevno na mejlovima",
+    p2_name: "Sumarizer sastanaka",
+    p2_desc: "Otpremi transkript sastanka i odmah dobij strukturiran sa\u017eetak sa klju\u010dnim odlukama, akcijama i rokovima. Podr\u017eava PDF, DOCX i TXT.",
+    p2_result: "\u21b3 1h sastanak u 30sec sa\u017eetak",
+    p3_name: "CV Skener",
+    p3_desc: "Otpremi vi\u0161e CV-jeva i opis posla \u2014 AI rangira kandidate od 1-10, isti\u010de prednosti i slabosti i preporu\u010duje koga pozvati na intervju.",
+    p3_result: "\u21b3 Rangira 20 CV-jeva za 60 sekundi",
+    p4_name: "Monitor cena",
+    p4_desc: "Prati cene konkurencije 24/7 na vi\u0161e URL-ova. AI automatski izvla\u010di cene sa bilo koje stranice i \u0161alje email alarme kada se cene promene.",
+    p4_result: "\u21b3 Prati neograni\u010den broj URL-ova",
+    skills_label: "// \u0160ta koristim", skills_title: "Ve\u0161tine i tehnologije",
+    level_advanced: "Napredno", level_proficient: "Iskusan", level_competition: "Takmi\u010darski",
+    skill_auto: "Automatizacija", skill_algo: "Algoritmi",
+    about_label: "// Ko sam ja", about_title: "Dostignu\u0107a",
+    ach1_title: "Dr\u017eavno takmi\u010denje iz programiranja", ach1_sub: "Algoritmi i strukture podataka",
+    ach2_title: "Dr\u017eavna matemati\u010dka olimpijada", ach2_sub: "Re\u0161avanje zadataka i matemati\u010dko razmi\u0161ljanje",
+    ach3_title: "Dr\u017eavno takmi\u010denje iz fizike", ach3_sub: "Analiti\u010dko razmi\u0161ljanje i nau\u010dno modelovanje",
+    ach4_title: "AI programer i automati\u010dar", ach4_sub: "Izradio produkcijske AI alate za realne poslovne potrebe",
+    badge_competitor: "Takmi\u010dar", badge_self: "Samouk",
+    contact_heading: "Hajde da<br>napravimo ne\u0161to.", contact_sub: "Dostupan za freelance projekte i saradnju",
+    contact_email: "Po\u0161alji mejl",
+    footer_status: "Dostupan za posao", footer_credit: "Napravio Marko \u0110urin \u2014 Srbija \uD83C\uDDF7\uD83C\uDDF8"
+  }
+};
+
+function setLang(lang) {
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-sr').classList.toggle('active', lang === 'sr');
+  document.documentElement.lang = lang;
+  const t = translations[lang];
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const val = t[el.getAttribute('data-t')];
+    if (!val) return;
+    if (val.includes('<br>')) el.innerHTML = val;
+    else el.textContent = val;
+
+    // Update email href when language changes
+    if (el.getAttribute('data-t') === 'contact_email') {
+      if (lang === 'en') {
+        el.href = 'https://mail.google.com/mail/?view=cm&fs=1&to=markodjurin4@gmail.com';
+        el.target = '_blank';
+      } else {
+        el.href = 'https://mail.google.com/mail/?view=cm&fs=1&to=markodjurin4@gmail.com';
+        el.target = '_blank';
+      }
+    }
+  });
+}
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
